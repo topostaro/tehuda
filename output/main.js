@@ -4412,11 +4412,12 @@ var $elm$core$Basics$composeR = F3(
 		return g(
 			f(x));
 	});
-var $author$project$Main$Model = F3(
-	function (deck, drawn, target) {
-		return {deck: deck, drawn: drawn, target: target};
+var $elm$core$Basics$False = {$: 'False'};
+var $author$project$Main$Model = F5(
+	function (deck, drawn, target, godonBool, godonNum) {
+		return {deck: deck, drawn: drawn, godonBool: godonBool, godonNum: godonNum, target: target};
 	});
-var $author$project$Main$init = A3($author$project$Main$Model, '40', '5', '9');
+var $author$project$Main$init = A5($author$project$Main$Model, 40, 5, 9, false, 0);
 var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
 var $elm$core$Basics$LT = {$: 'LT'};
@@ -4518,7 +4519,6 @@ var $elm$core$Result$Ok = function (a) {
 var $elm$json$Json$Decode$OneOf = function (a) {
 	return {$: 'OneOf', a: a};
 };
-var $elm$core$Basics$False = {$: 'False'};
 var $elm$core$Basics$add = _Basics_add;
 var $elm$core$Maybe$Just = function (a) {
 	return {$: 'Just', a: a};
@@ -6113,36 +6113,6 @@ var $rtfeldman$elm_css$VirtualDom$Styled$toUnstyled = function (vdom) {
 	}
 };
 var $rtfeldman$elm_css$Html$Styled$toUnstyled = $rtfeldman$elm_css$VirtualDom$Styled$toUnstyled;
-var $author$project$Main$update = F2(
-	function (msg, model) {
-		switch (msg.$) {
-			case 'Deck':
-				var deck = msg.a;
-				return _Utils_update(
-					model,
-					{deck: deck});
-			case 'Drawn':
-				var drawn = msg.a;
-				return _Utils_update(
-					model,
-					{drawn: drawn});
-			default:
-				var target = msg.a;
-				return _Utils_update(
-					model,
-					{target: target});
-		}
-	});
-var $author$project$Main$Deck = function (a) {
-	return {$: 'Deck', a: a};
-};
-var $author$project$Main$Drawn = function (a) {
-	return {$: 'Drawn', a: a};
-};
-var $author$project$Main$Target = function (a) {
-	return {$: 'Target', a: a};
-};
-var $elm$core$String$toFloat = _String_toFloat;
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (maybe.$ === 'Just') {
@@ -6152,29 +6122,89 @@ var $elm$core$Maybe$withDefault = F2(
 			return _default;
 		}
 	});
-var $author$project$Main$calculate = function (model) {
-	var target = A2(
-		$elm$core$Maybe$withDefault,
-		0,
-		$elm$core$String$toFloat(model.target));
-	var drawn = A2(
-		$elm$core$Maybe$withDefault,
-		0,
-		$elm$core$String$toInt(model.drawn));
-	var deck = A2(
-		$elm$core$Maybe$withDefault,
-		40,
-		$elm$core$String$toFloat(model.deck));
-	var choose = F2(
-		function (n, k) {
-			if (!k) {
-				return 1;
-			} else {
-				return A2(choose, n - 1, k - 1) * n;
-			}
-		});
-	return (1 - (A2(choose, deck - target, drawn) / A2(choose, deck, drawn))) * 100.0;
+var $author$project$Main$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'Deck':
+				var deck = msg.a;
+				return _Utils_update(
+					model,
+					{
+						deck: A2(
+							$elm$core$Maybe$withDefault,
+							40,
+							$elm$core$String$toInt(deck))
+					});
+			case 'Drawn':
+				var drawn = msg.a;
+				return _Utils_update(
+					model,
+					{
+						drawn: A2(
+							$elm$core$Maybe$withDefault,
+							0,
+							$elm$core$String$toInt(drawn))
+					});
+			case 'Target':
+				var target = msg.a;
+				return _Utils_update(
+					model,
+					{
+						target: A2(
+							$elm$core$Maybe$withDefault,
+							0,
+							$elm$core$String$toInt(target))
+					});
+			case 'GodonBool':
+				var godonBool = msg.a;
+				return _Utils_update(
+					model,
+					{godonBool: godonBool});
+			default:
+				var godonNum = msg.a;
+				return _Utils_update(
+					model,
+					{
+						godonNum: A2(
+							$elm$core$Maybe$withDefault,
+							0,
+							$elm$core$String$toInt(godonNum))
+					});
+		}
+	});
+var $author$project$Main$Deck = function (a) {
+	return {$: 'Deck', a: a};
 };
+var $author$project$Main$Drawn = function (a) {
+	return {$: 'Drawn', a: a};
+};
+var $author$project$Main$GodonBool = function (a) {
+	return {$: 'GodonBool', a: a};
+};
+var $author$project$Main$Target = function (a) {
+	return {$: 'Target', a: a};
+};
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $rtfeldman$elm_css$VirtualDom$Styled$Attribute = F3(
+	function (a, b, c) {
+		return {$: 'Attribute', a: a, b: b, c: c};
+	});
+var $rtfeldman$elm_css$VirtualDom$Styled$property = F2(
+	function (key, value) {
+		return A3(
+			$rtfeldman$elm_css$VirtualDom$Styled$Attribute,
+			A2($elm$virtual_dom$VirtualDom$property, key, value),
+			false,
+			'');
+	});
+var $rtfeldman$elm_css$Html$Styled$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			$rtfeldman$elm_css$VirtualDom$Styled$property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $rtfeldman$elm_css$Html$Styled$Attributes$checked = $rtfeldman$elm_css$Html$Styled$Attributes$boolProperty('checked');
 var $rtfeldman$elm_css$VirtualDom$Styled$Node = F3(
 	function (a, b, c) {
 		return {$: 'Node', a: a, b: b, c: c};
@@ -6182,7 +6212,8 @@ var $rtfeldman$elm_css$VirtualDom$Styled$Node = F3(
 var $rtfeldman$elm_css$VirtualDom$Styled$node = $rtfeldman$elm_css$VirtualDom$Styled$Node;
 var $rtfeldman$elm_css$Html$Styled$node = $rtfeldman$elm_css$VirtualDom$Styled$node;
 var $rtfeldman$elm_css$Html$Styled$div = $rtfeldman$elm_css$Html$Styled$node('div');
-var $elm$core$String$fromFloat = _String_fromNumber;
+var $rtfeldman$elm_css$Html$Styled$h3 = $rtfeldman$elm_css$Html$Styled$node('h3');
+var $rtfeldman$elm_css$Html$Styled$input = $rtfeldman$elm_css$Html$Styled$node('input');
 var $rtfeldman$elm_css$Css$Preprocess$AppendProperty = function (a) {
 	return {$: 'AppendProperty', a: a};
 };
@@ -6647,6 +6678,7 @@ var $rtfeldman$elm_css$Css$linearGradient2 = F4(
 		};
 	});
 var $rtfeldman$elm_css$Css$PercentageUnits = {$: 'PercentageUnits'};
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $rtfeldman$elm_css$Css$Internal$lengthConverter = F3(
 	function (units, unitLabel, numericValue) {
 		return {
@@ -6680,10 +6712,6 @@ var $rtfeldman$elm_css$Css$stop2 = F2(
 		return _Utils_Tuple2(
 			c,
 			$elm$core$Maybe$Just(len));
-	});
-var $rtfeldman$elm_css$VirtualDom$Styled$Attribute = F3(
-	function (a, b, c) {
-		return {$: 'Attribute', a: a, b: b, c: c};
 	});
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
@@ -8198,37 +8226,8 @@ var $author$project$Main$myH1 = A2(
 					$rtfeldman$elm_css$Css$hex('a7d6ff')),
 				_List_Nil))
 		]));
-var $rtfeldman$elm_css$VirtualDom$Styled$Unstyled = function (a) {
-	return {$: 'Unstyled', a: a};
-};
-var $rtfeldman$elm_css$VirtualDom$Styled$text = function (str) {
-	return $rtfeldman$elm_css$VirtualDom$Styled$Unstyled(
-		$elm$virtual_dom$VirtualDom$text(str));
-};
-var $rtfeldman$elm_css$Html$Styled$text = $rtfeldman$elm_css$VirtualDom$Styled$text;
-var $rtfeldman$elm_css$Html$Styled$input = $rtfeldman$elm_css$Html$Styled$node('input');
-var $rtfeldman$elm_css$VirtualDom$Styled$property = F2(
-	function (key, value) {
-		return A3(
-			$rtfeldman$elm_css$VirtualDom$Styled$Attribute,
-			A2($elm$virtual_dom$VirtualDom$property, key, value),
-			false,
-			'');
-	});
-var $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			$rtfeldman$elm_css$VirtualDom$Styled$property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
-var $rtfeldman$elm_css$Html$Styled$Attributes$max = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('max');
-var $rtfeldman$elm_css$Html$Styled$Attributes$min = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('min');
-var $rtfeldman$elm_css$Html$Styled$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
 };
 var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
 var $rtfeldman$elm_css$VirtualDom$Styled$on = F2(
@@ -8239,17 +8238,60 @@ var $rtfeldman$elm_css$VirtualDom$Styled$on = F2(
 			false,
 			'');
 	});
+var $rtfeldman$elm_css$Html$Styled$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$rtfeldman$elm_css$VirtualDom$Styled$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$bool = _Json_decodeBool;
+var $rtfeldman$elm_css$Html$Styled$Events$targetChecked = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'checked']),
+	$elm$json$Json$Decode$bool);
+var $rtfeldman$elm_css$Html$Styled$Events$onCheck = function (tagger) {
+	return A2(
+		$rtfeldman$elm_css$Html$Styled$Events$on,
+		'change',
+		A2($elm$json$Json$Decode$map, tagger, $rtfeldman$elm_css$Html$Styled$Events$targetChecked));
+};
+var $rtfeldman$elm_css$VirtualDom$Styled$Unstyled = function (a) {
+	return {$: 'Unstyled', a: a};
+};
+var $rtfeldman$elm_css$VirtualDom$Styled$text = function (str) {
+	return $rtfeldman$elm_css$VirtualDom$Styled$Unstyled(
+		$elm$virtual_dom$VirtualDom$text(str));
+};
+var $rtfeldman$elm_css$Html$Styled$text = $rtfeldman$elm_css$VirtualDom$Styled$text;
+var $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			$rtfeldman$elm_css$VirtualDom$Styled$property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $rtfeldman$elm_css$Html$Styled$Attributes$type_ = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('type');
+var $rtfeldman$elm_css$Html$Styled$Attributes$max = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('max');
+var $rtfeldman$elm_css$Html$Styled$Attributes$min = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('min');
+var $rtfeldman$elm_css$Html$Styled$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
 var $rtfeldman$elm_css$Html$Styled$Events$stopPropagationOn = F2(
 	function (event, decoder) {
 		return A2(
 			$rtfeldman$elm_css$VirtualDom$Styled$on,
 			event,
 			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
 	});
 var $elm$json$Json$Decode$string = _Json_decodeString;
 var $rtfeldman$elm_css$Html$Styled$Events$targetValue = A2(
@@ -8276,9 +8318,8 @@ var $rtfeldman$elm_css$VirtualDom$Styled$style = F2(
 			'');
 	});
 var $rtfeldman$elm_css$Html$Styled$Attributes$style = $rtfeldman$elm_css$VirtualDom$Styled$style;
-var $rtfeldman$elm_css$Html$Styled$Attributes$type_ = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('type');
 var $rtfeldman$elm_css$Html$Styled$Attributes$value = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('value');
-var $author$project$Main$viewInput = F4(
+var $author$project$Main$viewInputNumber = F4(
 	function (name, val, max, toMsg) {
 		return A2(
 			$rtfeldman$elm_css$Html$Styled$div,
@@ -8302,6 +8343,69 @@ var $author$project$Main$viewInput = F4(
 					$rtfeldman$elm_css$Html$Styled$text('枚')
 				]));
 	});
+var $author$project$Main$calculate = F2(
+	function (model, hit) {
+		var target = model.target;
+		var drawn = model.drawn;
+		var deck = model.deck;
+		var choose = F2(
+			function (n, k) {
+				if (!k) {
+					return 1;
+				} else {
+					return (A2(choose, n - 1, k - 1) * n) / k;
+				}
+			});
+		return 100.0 * ((A2(choose, target, hit) * A2(choose, deck - target, drawn - hit)) / A2(choose, deck, drawn));
+	});
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $author$project$Main$viewResult = function (model) {
+	var subview = function (n) {
+		return A2(
+			$rtfeldman$elm_css$Html$Styled$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$rtfeldman$elm_css$Html$Styled$text(
+					function (s) {
+						return $elm$core$String$fromInt(n) + ('枚: ' + (s + '%'));
+					}(
+						A3(
+							$elm$core$String$slice,
+							0,
+							5,
+							$elm$core$String$fromFloat(
+								A2($author$project$Main$calculate, model, n)))))
+				]));
+	};
+	return A2(
+		$rtfeldman$elm_css$Html$Styled$div,
+		_List_Nil,
+		_Utils_ap(
+			A2(
+				$elm$core$List$map,
+				subview,
+				A2($elm$core$List$range, 1, model.drawn)),
+			_List_fromArray(
+				[
+					$rtfeldman$elm_css$Html$Styled$text(
+					function (s) {
+						return '計: ' + (s + '%');
+					}(
+						A3(
+							$elm$core$String$slice,
+							0,
+							5,
+							$elm$core$String$fromFloat(
+								$elm$core$List$sum(
+									A2(
+										$elm$core$List$map,
+										$author$project$Main$calculate(model),
+										A2($elm$core$List$range, 1, model.drawn)))))))
+				])));
+};
 var $author$project$Main$view = function (model) {
 	return A2(
 		$rtfeldman$elm_css$Html$Styled$div,
@@ -8315,16 +8419,41 @@ var $author$project$Main$view = function (model) {
 					[
 						$rtfeldman$elm_css$Html$Styled$text('手札シミュレーター')
 					])),
-				A4($author$project$Main$viewInput, 'デッキ枚数 ', model.deck, 60, $author$project$Main$Deck),
-				A4($author$project$Main$viewInput, 'ドロー枚数 ', model.drawn, 60, $author$project$Main$Drawn),
-				A4($author$project$Main$viewInput, '引きたいカード ', model.target, 60, $author$project$Main$Target),
-				$rtfeldman$elm_css$Html$Styled$text(
-				'結果: ' + (A3(
-					$elm$core$String$slice,
-					0,
-					5,
-					$elm$core$String$fromFloat(
-						$author$project$Main$calculate(model))) + '%'))
+				A4(
+				$author$project$Main$viewInputNumber,
+				'デッキ枚数 ',
+				$elm$core$String$fromInt(model.deck),
+				60,
+				$author$project$Main$Deck),
+				A4(
+				$author$project$Main$viewInputNumber,
+				'ドロー枚数 ',
+				$elm$core$String$fromInt(model.drawn),
+				60,
+				$author$project$Main$Drawn),
+				A4(
+				$author$project$Main$viewInputNumber,
+				'引きたいカード ',
+				$elm$core$String$fromInt(model.target),
+				60,
+				$author$project$Main$Target),
+				A2(
+				$rtfeldman$elm_css$Html$Styled$input,
+				_List_fromArray(
+					[
+						$rtfeldman$elm_css$Html$Styled$Attributes$type_('checkbox'),
+						$rtfeldman$elm_css$Html$Styled$Attributes$checked(model.godonBool),
+						$rtfeldman$elm_css$Html$Styled$Events$onCheck($author$project$Main$GodonBool)
+					]),
+				_List_Nil),
+				A2(
+				$rtfeldman$elm_css$Html$Styled$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$rtfeldman$elm_css$Html$Styled$text('結果: ')
+					])),
+				$author$project$Main$viewResult(model)
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$sandbox(
