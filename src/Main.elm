@@ -2,10 +2,11 @@ module Main exposing (main)
 
 import Browser
 import Css exposing (..)
-import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
-import Html.Styled.Events exposing (onInput)
+import Html.Styled.Events exposing (..)
+import List exposing (range, sum)
+import String exposing (slice)
 
 
 
@@ -26,15 +27,17 @@ main =
 
 
 type alias Model =
-    { deck : String
-    , drawn : String
-    , target : String
+    { deck : Int
+    , drawn : Int
+    , target : Int
+    , godonBool : Bool
+    , godonNum : Int
     }
 
 
 init : Model
 init =
-    Model "40" "5" "9"
+    Model 40 5 9 False 0
 
 
 
@@ -45,19 +48,27 @@ type Msg
     = Deck String
     | Drawn String
     | Target String
+    | GodonBool Bool
+    | GodonNum String
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
         Deck deck ->
-            { model | deck = deck }
+            { model | deck = Maybe.withDefault 40 <| String.toInt deck }
 
         Drawn drawn ->
-            { model | drawn = drawn }
+            { model | drawn = Maybe.withDefault 0 <| String.toInt drawn }
 
         Target target ->
-            { model | target = target }
+            { model | target = Maybe.withDefault 0 <| String.toInt target }
+
+        GodonBool godonBool ->
+            { model | godonBool = godonBool }
+
+        GodonNum godonNum ->
+            { model | godonNum = Maybe.withDefault 0 <| String.toInt godonNum }
 
 
 
@@ -68,18 +79,17 @@ view : Model -> Html Msg
 view model =
     div []
         [ myH1 [] [ text "手札シミュレーター" ]
-        , viewInput "デッキ枚数 " model.deck 60 Deck
-        , viewInput "ドロー枚数 " model.drawn 60 Drawn
-        , viewInput "引きたいカード " model.target 60 Target
-        , text <|
-            "結果: "
-                ++ (String.slice 0 5 <| String.fromFloat <| calculate model)
-                ++ "%"
+        , viewInputNumber "デッキ枚数 " (String.fromInt model.deck) 60 Deck
+        , viewInputNumber "ドロー枚数 " (String.fromInt model.drawn) 60 Drawn
+        , viewInputNumber "引きたいカード " (String.fromInt model.target) 60 Target
+        , input [ type_ "checkbox", Html.Styled.Attributes.checked model.godonBool, onCheck GodonBool ] []
+        , h3 [] [ text "結果: " ]
+        , viewResult model
         ]
 
 
-viewInput : String -> String -> Int -> (String -> msg) -> Html msg
-viewInput name val max toMsg =
+viewInputNumber : String -> String -> Int -> (String -> msg) -> Html msg
+viewInputNumber name val max toMsg =
     div []
         [ text name
         , input
@@ -95,8 +105,42 @@ viewInput name val max toMsg =
         ]
 
 
-calculate : Model -> Float
-calculate model =
+viewResult model =
+    let
+        subview n =
+            div []
+                [ calculate model n
+                    |> String.fromFloat
+                    |> slice 0 5
+                    |> (\s ->
+                            String.fromInt n
+                                ++ "枚: "
+                                ++ s
+                                ++ "%"
+                       )
+                    |> text
+                ]
+    in
+    div [] <|
+        (List.map subview <|
+            range 1 model.drawn
+        )
+            ++ [ range 1 model.drawn
+                    |> List.map (calculate model)
+                    |> sum
+                    |> String.fromFloat
+                    |> slice 0 5
+                    |> (\s ->
+                            "計: "
+                                ++ s
+                                ++ "%"
+                       )
+                    |> text
+               ]
+
+
+calculate : Model -> Int -> Float
+calculate model hit =
     let
         choose n k =
             case k of
@@ -104,18 +148,18 @@ calculate model =
                     1
 
                 _ ->
-                    choose (n - 1) (k - 1) * n
+                    choose (n - 1) (k - 1) * n / toFloat k
 
         deck =
-            String.toFloat model.deck |> Maybe.withDefault 40
+            toFloat model.deck
 
         drawn =
-            String.toInt model.drawn |> Maybe.withDefault 0
+            model.drawn
 
         target =
-            String.toFloat model.target |> Maybe.withDefault 0
+            toFloat model.target
     in
-    (1 - choose (deck - target) drawn / choose deck drawn) * 100.0
+    100.0 * (choose target hit * choose (deck - target) (drawn - hit) / choose deck drawn)
 
 
 myH1 =
